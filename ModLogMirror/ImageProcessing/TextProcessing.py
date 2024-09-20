@@ -1,11 +1,15 @@
-BLACKLIST = ["PSO2", "AH", "%", "COM", "PSOAH", "MESETA", "5%"]
+from Config import ImageProcessing as ImageConfig
 
-def checkText(input):
-    global BLACKLIST
+def CheckText(input):
+    """ Checks whether any content in the given input is in Imageconfig.WORD_BLACKLIST. 
+        Returns a joined string of the matched words.
+    """
+
     inputSplit = str(input).replace("\\r", "").replace("\\n", " ").split(" ")
+    matchedWords = []
 
     for word in inputSplit:
-        if word in BLACKLIST:
-            return True, word
+        if word.lower() in ImageConfig.WORD_BLACKLIST:
+            matchedWords.append(word)
 
-    return False, None
+    return [str(word) for word in set(matchedWords)]

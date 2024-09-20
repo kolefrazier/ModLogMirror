@@ -1,0 +1,78 @@
+{
+  "activeEnvironment": "dev",
+
+  "imageProcessing": {
+    "wordBlacklist": [],
+    "dev": {
+      "imageSaveLocation": "imagedownloads/",
+      "imageMagickPath": ""
+    },
+    "prod": {
+      "note": "installing imagemagick via apt makes the individual executables (convert, identify) available as top-level shell commands, so leave the path blank",
+      "imageSaveLocation": "imagedownloads/",
+      "imageMagickPath": ""
+    }
+  },
+
+  "reddit": {
+    "username": "",
+    "password": "",
+    "clientSecret": "",
+    "clientId": "",
+    "userAgent": "Custom user agent string here",
+    "appScopes": "read submit privatemessages modlog",
+    "subreddits": {
+      "regular": [ "foo" ],
+      "moderated": [],
+      "modlog": []
+    }
+  },
+
+  "discord": {
+    "clientId": "",
+    "clientSecret": "",
+    "token": "",
+    "channels": {
+      "dev": {
+        // channels can be singular, or support multiple subreddits (as key-values)
+        "pso2-general": 1234567890,
+        "pso2-alerts": 1234567890,
+        "pso2-submissions": {
+          "Sub1": 1234567890,
+          "Sub2": 1324567890
+        },
+        "pso2-modlog": 1234567890,
+        "pso2-modmail": 1234567890,
+        "pso2-reports": 1234567890,
+        "pso2-imageprocessing": 1234567890
+      },
+      "prod": {
+        "pso2-general": 1234567890,
+        "pso2-alerts": 1234567890,
+        "pso2-submissions": {
+          "Sub1": 1234567890,
+          "Sub2": 1324567890
+        },
+        "pso2-modlog": 1234567890,
+        "pso2-modmail": 1234567890,
+        "pso2-reports": 1234567890,
+        "pso2-imageprocessing": 1234567890
+      }
+    }
+  },
+
+  "redis": {
+    "host": "",
+    "port": "6379",
+    "password": "",
+    "db": 0
+  },
+
+  "postgres": {
+    "host": "",
+    "port": "5432",
+    "database": "",
+    "user": "",
+    "password": ""
+  }
+}

@@ -31,7 +31,8 @@ def __getExisting(username):
                """,
                {
                    'username': username
-               }
+               },
+                "Contributers"
            ).fetchone()
 
 def __insert(username):
@@ -42,7 +43,8 @@ def __insert(username):
                """,
                {
                    'username': username
-               }
+               },
+                "Contributers"
            ).fetchone()
 
 #def __update(username, last_seen):

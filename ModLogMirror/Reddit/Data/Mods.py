@@ -28,7 +28,8 @@ def __getExisting(username):
                     WHERE username = %(username)s;""",
                 {
                     'username': username
-                }
+                },
+                "Mods"
             ).fetchone()
 
 def __insert(username):
@@ -38,7 +39,8 @@ def __insert(username):
                 RETURNING id, username""", 
                 {
                     'username': username
-                }
+                },
+                "Mods"
             ).fetchone()
 
 #def __update(username, last_seen):

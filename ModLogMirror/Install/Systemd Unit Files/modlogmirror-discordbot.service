@@ -1,0 +1,15 @@
+[Unit]
+Description=ModLogMirror Discord Bot
+StartLimitIntervalSec=600
+StartLimitBurst=5
+
+[Service]
+WorkingDirectory=/home/kole/git/ModLogMirror/ModLogMirror/
+ExecStart=/home/kole/git/ModLogMirror/ModLogMirror/Install/ServiceScripts/StartServiceDiscordBot.sh
+Restart=always
+RestartSec=60
+SyslogIdentifier=modlogmirror-discordbot
+User=kole
+
+[Install]
+WantedBy=multi-user.target

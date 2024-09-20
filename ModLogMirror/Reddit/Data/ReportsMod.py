@@ -26,7 +26,43 @@ def Upsert(report, subredditId):
     elif totalReports > existingReport["total_reports"]:
         # I believe reports are additive (only appends to list, does not clear list). So just updating the record values should do the trick.
         __update(existingReport["id"], report.user_reports, totalReports)
-        ReportsCache.Insert(existingReport["id"], recordId, totalReports)
+        ReportsCache.Insert(existingReport["reddit_id"], existingReport["id"], totalReports)
+
+def GetUnnotified(subredditId):
+    QueryResults = DbDriver.ExecuteQuery(
+        """SELECT id, reddit_id, reddit_type, report_content, total_reports, first_notification
+            FROM reports_moderator
+            WHERE subreddit_id = %(subredditId)s
+            AND discord_notified = false;
+        """,
+        {
+            "subredditId": subredditId
+        }
+    ).fetchall()
+
+    ReportEntries = []
+    for entry in QueryResults:
+        ReportEntries.append({
+            "id": entry[0],
+            "reddit_id": entry[1],
+            "reddit_type": entry[2],
+            "report_content": entry[3],
+            "total_reports": entry[4],
+            "first_notification": entry[5]
+        })
+
+    return ReportEntries
+
+def MarkNotified(reportIds):
+    DbDriver.ExecuteQuery(
+        """UPDATE reports_moderator
+           SET discord_notified = true, first_notified = true
+           WHERE id IN %(ids)s;
+        """,
+        {
+            "ids": tuple(reportIds)
+        }
+    )
 
 def __getExisting(reportRedditId):
     record = DbDriver.ExecuteQuery(
@@ -36,7 +72,8 @@ def __getExisting(reportRedditId):
                 """,
                 {
                     'reddit_id': reportRedditId
-                }
+                },
+                "ReportsMod"
             ).fetchone()
 
     if record is None:
@@ -61,7 +98,8 @@ def __insert(reportRedditId, redditType, subredditId, reportContent, totalReport
                     'total_reports': totalReports,
                     'created': str(created),
                     'last_updated': str(created)
-                }
+                },
+                "ReportsMod"
             ).fetchone()[0]
 
 def __update(reportRecordId, reportContent, totalReports, lastUpdated=str(datetime.utcnow())):
@@ -74,9 +112,10 @@ def __update(reportRecordId, reportContent, totalReports, lastUpdated=str(dateti
                     WHERE id = %(existing_id)s;
                 """,
                 {
-                    'existing_id': existing[0],
+                    'existing_id': reportRecordId,
                     'last_updated': str(datetime.utcnow()),
-                    'report_content': str(updated.mod_reports),
+                    'report_content': str(reportContent),
                     'total_reports': totalReports,
-                }
-            ).fetchone()
+                },
+                "ReportsMod"
+            )

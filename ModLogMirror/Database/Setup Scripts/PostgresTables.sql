@@ -29,13 +29,17 @@ CREATE TABLE submissions (
   subreddit_id INTEGER REFERENCES subreddits(id),
   title TEXT,
   content TEXT,
+  domain TEXT,
   flair_text TEXT,
   contributer_id INTEGER REFERENCES contributers(id),
   submission_status INTEGER,
   submission_date TIMESTAMPTZ,
   last_updated TIMESTAMPTZ,
   approved_by INTEGER REFERENCES moderators(id),
-  discord_notified BOOLEAN DEFAULT FALSE
+  discord_notified BOOLEAN DEFAULT FALSE,
+  over_18 BOOLEAN DEFAULT FALSE,
+  spoiler BOOLEAN DEFAULT FALSE,
+  permalink TEXT DEFAULT ''
 );
 
 CREATE INDEX idx_submissions_reddit_id ON submissions(reddit_id);
@@ -65,7 +69,8 @@ CREATE TABLE reports_user (
   total_reports INTEGER,
   created TIMESTAMPTZ,
   last_updated TIMESTAMPTZ,
-  discord_notified BOOLEAN DEFAULT FALSE
+  discord_notified BOOLEAN DEFAULT FALSE,
+  first_notification BOOLEAN DEFAULT FALSE
 );
 
 CREATE INDEX idx_reports_submission_id ON reports_user(reddit_id);
@@ -79,7 +84,9 @@ CREATE TABLE reports_moderator (
   total_reports INTEGER,
   created TIMESTAMPTZ,
   last_updated TIMESTAMPTZ,
-  discord_notified BOOLEAN DEFAULT FALSE
+  discord_notified BOOLEAN DEFAULT FALSE,
+  spam_abuse_auto_approved BOOLEAN DEFAULT FALSE, -- For the Jan 2021 "This is spam" report abuse on image posts
+  first_notification BOOLEAN DEFAULT FALSE
 );
 
 CREATE INDEX idx_modreports_submission_id ON reports_moderator(reddit_id);
@@ -169,19 +176,31 @@ CREATE INDEX idx_reddit_id ON mod_log(reddit_id);
 
 CREATE TABLE image_processing (
 	id SERIAL PRIMARY KEY,
-	submission_id TEXT UNIQUE,
-	file_name TEXT UNIQUE,
+	submission_id INTEGER REFERENCES submissions(id),
+	url TEXT,
+	file_name TEXT UNIQUE NULL,
+	file_hash bytea NULL,
 	parse_date TIMESTAMPTZ,
-	parsed_text_raw TEXT,
-	matched_text TEXT
+	tesseract_raw_output TEXT NULL,
+	matched_text TEXT NULL,
+	errors TEXT DEFAULT NULL,
+	processing_attempted BOOLEAN DEFAULT FALSE,
+	discord_notified BOOLEAN DEFAULT FALSE
 );
 
-CREATE INDEX idx_image_processing_reddit_id ON image_processing(submission_id);
+CREATE INDEX idx_image_processing_submission_id ON image_processing(submission_id);
 CREATE INDEX idx_image_processing_file_name ON image_processing(file_name);
 
 CREATE TABLE automoderator_matches (
 	id SERIAL PRIMARY KEY,
 	submission_id INTEGER REFERENCES submissions(id),
 	triggered_rule TEXT,
-	matches TEXT
+	matches TEXT,
+	discord_notified BOOLEAN DEFAULT FALSE
+);
+
+CREATE TABLE config_word_blacklist (
+	id SERIAL PRIMARY KEY,
+	word TEXT UNIQUE,
+	occurrences INTEGER DEFAULT 0
 );

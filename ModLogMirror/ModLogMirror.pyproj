@@ -4,13 +4,15 @@
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>1eababdd-6f74-40bc-a6a2-f4bea7cb4652</ProjectGuid>
     <ProjectHome>.</ProjectHome>
-    <StartupFile>ImageOCR.py</StartupFile>
+    <StartupFile>ModLogMirror.py</StartupFile>
     <SearchPath>
     </SearchPath>
     <WorkingDirectory>.</WorkingDirectory>
     <OutputPath>.</OutputPath>
     <Name>ModLogMirror</Name>
     <RootNamespace>ModLogMirror</RootNamespace>
+    <InterpreterId>MSBuild|ModLogMirror|$(MSBuildProjectFullPath)</InterpreterId>
+    <SuppressPackageInstallationPrompt>True</SuppressPackageInstallationPrompt>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
     <DebugSymbols>true</DebugSymbols>
@@ -23,6 +25,9 @@
   <ItemGroup>
     <Compile Include="Config\Database.py" />
     <Compile Include="Config\Discord.py">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Config\Environment.py">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Config\ImageProcessing.py">
@@ -39,15 +44,39 @@
     </Compile>
     <Compile Include="Config\__init__.py" />
     <Compile Include="Database\DatabaseDriver.py" />
-    <Compile Include="Discord\__init__.py" />
+    <Compile Include="DiscordBot.py">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Discord\Channels.py">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Discord\Cogs\ImageProcessing.py">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Discord\Cogs\ModLog.py" />
+    <Compile Include="Discord\Cogs\Submissions.py" />
+    <Compile Include="Discord\Cogs\ModMailOld.py" />
+    <Compile Include="Discord\Cogs\ReportAbuse.py" />
+    <Compile Include="Discord\Cogs\Reports.py">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Discord\Cogs\__init__.py" />
+    <Compile Include="Discord\Colors.py">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Discord\Images.py">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="ImageOCR.py">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="ImageProcessing\Exceptions.py">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="ImageProcessing\TextProcessing.py">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="ImageProcessing\__init__.py" />
-    <Compile Include="Logger\__init__.py" />
     <Compile Include="ModLogMirror.py" />
     <Compile Include="Reddit\Cache\ModmailNew.py" />
     <Compile Include="Reddit\Cache\Mods.py" />
@@ -107,6 +136,9 @@
     <Compile Include="Reddit\Enums.py">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="Reddit\Utility\ModeratorActions.py">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="Reddit\Streams\Comments.py">
       <SubType>Code</SubType>
     </Compile>
@@ -137,6 +169,9 @@
     <Compile Include="ImageProcessing\Utility.py">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="Reddit\Utility\TextHelpers.py">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="Reddit\Utility\__init__.py" />
     <Compile Include="Redis\Cache.py">
       <SubType>Code</SubType>
@@ -145,15 +180,30 @@
     <Compile Include="ImageProcessing\Tesseract.py">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="ReportsDbAudit2.py" />
+    <Compile Include="ReportsDbAudit.py">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="SelfPromoChecker.py">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="SubmissionFollower.py">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="Util\__init__.py" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Config\" />
+    <Folder Include="Database\Migration Scripts\" />
+    <Folder Include="Database\Other Scripts\" />
     <Folder Include="Discord\" />
-    <Folder Include="Logger\" />
+    <Folder Include="Discord\Cogs\" />
     <Folder Include="Database\Setup Scripts\" />
     <Folder Include="Database\" />
     <Folder Include="ImageProcessing\" />
+    <Folder Include="Install\" />
+    <Folder Include="Install\ServiceScripts\" />
+    <Folder Include="Install\Systemd Unit Files\" />
     <Folder Include="Reddit\Data\" />
     <Folder Include="Reddit\Cache\" />
     <Folder Include="Reddit\Utility\" />
@@ -165,10 +215,39 @@
     <Folder Include="Reddit\" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="activate_env.ps1" />
+    <Content Include="config.prod.json" />
+    <Content Include="config_template.json" />
+    <Content Include="Database\Migration Scripts\20220928_AddColumnSelfPromoCheck.sql" />
+    <Content Include="Database\Migration Scripts\20220705_CreateColumnRefactors.sql" />
+    <Content Include="Database\Other Scripts\DiscordNotifiedCatchup.sql" />
     <Content Include="Database\Setup Scripts\PostgresTables.sql">
       <SubType>Code</SubType>
     </Content>
     <Content Include="Database\Setup Scripts\SQLiteTables.sql" />
+    <Content Include="Install\Systemd Unit Files\modlogmirror-imageocr.service" />
+    <Content Include="Install\Systemd Unit Files\modlogmirror-discordbot.service" />
+    <Content Include="Install\Systemd Unit Files\modlogmirror-reddit.service" />
+    <Content Include="Install\update.sh">
+      <SubType>Code</SubType>
+    </Content>
+    <Content Include="requirements.txt" />
+    <Content Include="Install\ServiceScripts\StartServiceImageOcr.sh" />
+    <Content Include="Install\ServiceScripts\StartServiceDiscordBot.sh" />
+    <Content Include="Install\ServiceScripts\StartServiceModLogMirror.sh">
+      <SubType>Code</SubType>
+    </Content>
+  </ItemGroup>
+  <ItemGroup>
+    <Interpreter Include="..\..\..\..\..\..\PyEnvs\ModLogMirror\">
+      <Id>ModLogMirror</Id>
+      <Version>3.7</Version>
+      <Description>ModLogMirror (Python 3.7 (32-bit))</Description>
+      <InterpreterPath>Scripts\python.exe</InterpreterPath>
+      <WindowsInterpreterPath>Scripts\pythonw.exe</WindowsInterpreterPath>
+      <PathEnvironmentVariable>PYTHONPATH</PathEnvironmentVariable>
+      <Architecture>X86</Architecture>
+    </Interpreter>
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)\Python Tools\Microsoft.PythonTools.targets" />
   <!-- Uncomment the CoreCompile target to enable the Build command in

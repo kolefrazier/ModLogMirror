@@ -27,7 +27,8 @@ def __getExisting(conversationRedditId):
                """,
                {
                    'reddit_id': conversationRedditId
-               }
+               },
+               "ModmailNew"
            ).fetchone()
 
 def __insert(conversationRedditId, subredditId, authorId, subject, is_internal, last_updated):
@@ -43,7 +44,8 @@ def __insert(conversationRedditId, subredditId, authorId, subject, is_internal, 
                    'subject': subject,
                    'is_internal': is_internal,
                    'last_updated': last_updated
-               }
+               },
+               "ModmailNew"
            ).fetchone()
     
 

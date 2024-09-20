@@ -23,7 +23,8 @@ def __getExisting(redditId):
                """,
             {
                    'reddit_id': redditId
-            }
+            },
+            "ModmailNewMessage"
            ).fetchone()
 
 def __insert(messageRedditId, modmailConversationId, contributerId, bodyMarkdown, messageDate):
@@ -38,5 +39,6 @@ def __insert(messageRedditId, modmailConversationId, contributerId, bodyMarkdown
                     'contributer_id': contributerId,
                     'body_markdown': bodyMarkdown,
                     'message_date': messageDate
-                }
+                },
+                "ModmailNewMessage"
             ).fetchone()
